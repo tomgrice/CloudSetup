@@ -1,0 +1,29 @@
+name: CloudRig_Setup
+description: 'This document installs and sets up software and settings to convert a vanilla Windows Server 2019 image into one suitable for cloud gaming.'
+schemaVersion: 1.0
+phases:
+  -
+    name: 'build'
+    steps:
+      -
+        name: DownloadScripts
+        action: WebDownload
+        timeoutSeconds: 60
+        onFailure: Abort
+        maxAttempts: 3
+        inputs:
+          -
+            source: 'https://raw.githubusercontent.com/tomgrice/CloudSetup/main/Scripts/PreSetup.ps1'
+            destination: 'C:\PreSetup.ps1'
+
+      -
+        name: PreSetup
+        action: ExecutePowerShell
+        inputs:
+          file: '{{ build.DownloadScripts.inputs[0].destination }}'
+
+      -
+        name: DeleteScript
+        action: DeleteFile
+        inputs:
+          - path: '{{ build.DownloadScripts.inputs[0].destination }}'

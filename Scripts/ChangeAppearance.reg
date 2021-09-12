@@ -1,0 +1,23 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent]
+"AccentPalette"=hex:f6,c0,ff,00,e5,9d,f0,00,cc,7b,d9,00,b1,46,c2,00,7d,31,89,\
+  00,51,20,59,00,38,16,3d,00,ff,8c,00,00
+"StartColorMenu"=dword:ff89317d
+"AccentColorMenu"=dword:ffc246b1
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"TaskbarGlomLevel"=dword:00000001
+"TaskbarSmallIcons"=dword:00000001
+
+[HKEY_CURRENT_USER\Control Panel\Desktop]
+"WallPaper"=""
+"WallpaperStyle"="6"
+"AutoEndTasks"="1"
+"HungAppTimeout"="1000"
+"MenuShowDelay"="0"
+"WaitToKillAppTimeout"="2000"
+"LowLevelHooksTimeout"="1000"
+
+[HKEY_CURRENT_USER\Control Panel\Colors]
+"Background"="19 19 31"

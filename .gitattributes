@@ -1,0 +1,4 @@
+.gitattributes export-ignore
+/Lambda export-ignore
+LICENSE export-ignore
+README.md export-ignore
