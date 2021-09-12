@@ -20,7 +20,7 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 # Disable QuickEdit
 Set-ItemProperty -Path "HKU:\.DEFAULT\Console" -Name QuickEdit -Value 0 -Force
 
-Invoke-RestMethod -Uri 'https://api.github.com/repos/tomgrice/CloudSetup/zipball/main' -OutFile "C:\CloudSetup.zip"
+Invoke-RestMethod -Uri 'https://github.com/tomgrice/CloudSetup/releases/download/v0.1.0/CloudSetup_release.zip' -OutFile "C:\CloudSetup.zip"
 Expand-Archive -Path "C:\CloudSetup.zip" -DestinationPath "C:\"
 Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 
