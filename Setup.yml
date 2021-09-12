@@ -13,7 +13,7 @@ phases:
         maxAttempts: 3
         inputs:
           -
-            source: 'https://raw.githubusercontent.com/tomgrice/CloudSetup/main/Scripts/PreSetup.ps1'
+            source: 'https://raw.githubusercontent.com/tomgrice/CloudSetup/dev/Scripts/PreSetup.ps1'
             destination: 'C:\PreSetup.ps1'
 
       -
