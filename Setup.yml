@@ -15,6 +15,9 @@ phases:
           -
             source: 'https://raw.githubusercontent.com/tomgrice/CloudSetup/dev/Scripts/PreSetup.ps1'
             destination: 'C:\PreSetup.ps1'
+          -
+            source: 'https://raw.githubusercontent.com/tomgrice/CloudSetup/dev/imageconfig.json'
+            destination: 'C:\imageconfig.json'
 
       -
         name: PreSetup
@@ -27,3 +30,8 @@ phases:
         action: DeleteFile
         inputs:
           - path: '{{ build.DownloadScripts.inputs[0].destination }}'
+      -
+        name: DeleteConfig
+        action: DeleteFile
+        inputs:
+          - path: '{{ build.DownloadScripts.inputs[1].destination }}'

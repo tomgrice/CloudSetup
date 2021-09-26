@@ -8,7 +8,7 @@ Copy-Item "$InstallDir\Scripts\StartupActions.ps1" -Destination "C:\"
 if (!(Get-ScheduledTask -TaskName "StartupActions" -ErrorAction SilentlyContinue)) {
     $action = New-ScheduledTaskAction -Execute "powershell" -Argument "-File C:\StartupActions.ps1 -WindowStyle Minimized" -WorkingDirectory "C:\"
     $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
-    $settings = New-ScheduledTaskSettingsSet -Priority 10
+    $settings = New-ScheduledTaskSettingsSet -Priority 1
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
     Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "StartupActions" -Settings $settings -Principal $principal -Description "Runs StartupActions powershell script." | Out-Null
 }

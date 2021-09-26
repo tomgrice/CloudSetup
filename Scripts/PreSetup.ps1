@@ -1,4 +1,6 @@
 $InstallDir = "C:\CloudSetup"
+$ScriptConfig = Get-Content -Path "C:\imageconfig.json" | ConvertFrom-Json
+
 New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
 
 Function DlFile([string]$Url, [string]$Path, [string]$Name) {
@@ -13,6 +15,10 @@ Function DlFile([string]$Url, [string]$Path, [string]$Name) {
 }
 
 Import-Module BitsTransfer
+
+# This adds a LOT of time to the image build process but reduces the \Windows folder size.
+Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
+Start-Process Compact -ArgumentList "/CompactOS:Always" -NoNewWindow -Wait
 
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
@@ -45,12 +51,6 @@ $action = @(0,1)
 $action[0] = New-ScheduledTaskAction -Execute "powershell" -Argument "Set-ItemProperty -Path HKCU:\Console -Name QuickEdit -Value 0 ; (Get-ChildItem -Path HKCU:\Console -Recurse -Include *powershell* -ErrorAction SilentlyContinue | Remove-Item)" -WorkingDirectory "$InstallDir"
 $action[1] = New-ScheduledTaskAction -Execute "powershell" -Argument "-File $InstallDir\Setup.ps1" -WorkingDirectory "$InstallDir"
 $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
-$settings = New-ScheduledTaskSettingsSet -Priority 10
+$settings = New-ScheduledTaskSettingsSet -Priority 1
 $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "SetupTask" -Settings $settings -Principal $principal -Description "Runs inital setup task." | Out-Null
-
-
-
-# This adds a LOT of time to the image build process but reduces the \Windows folder size.
-#Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
-#Start-Process Compact -ArgumentList "/CompactOS:Always" -NoNewWindow -Wait

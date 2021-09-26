@@ -1,7 +1,8 @@
 . C:\ProgramData\Amazon\EC2-Windows\Launch\Module\Scripts\Invoke-NetUser.ps1
 
+$ScriptConfig = Get-Content -Path "C:\imageconfig.json" | ConvertFrom-Json
 $AdminUser = "Administrator"
-$AdminPassword = "948jgokOE9940!fr"
+$AdminPassword = $ScriptConfig.DefaultPassword
 Invoke-NetUser -UserName $AdminUser -Password $AdminPassword -Flags @("/ACTIVE:YES", "/LOGONPASSWORDCHG:NO", "/EXPIRES:NEVER", "/PASSWORDREQ:NO")
 
 function Disable-CAD {

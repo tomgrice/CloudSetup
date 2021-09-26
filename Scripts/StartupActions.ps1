@@ -6,11 +6,16 @@ if ($user_data.DebugMode) {
     Start-Transcript 
 }
 
-Write-Host "Applying AWS Windows Licencing fix."
-Import-Module "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1"
-Add-Routes | Out-Null
-Set-ActivationSettings
-slmgr //B /ato
+$license = (Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | where { $_.PartialProductKey } | select LicenseStatus).LicenseStatus
+
+if($license -ne "1")
+{
+  Write-Host "Applying AWS Windows Licencing fix."
+  Import-Module "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1"
+  Add-Routes | Out-Null
+  Set-ActivationSettings
+  slmgr //B /ato
+}
 
 Write-Host "Checking for user change requests."
 
