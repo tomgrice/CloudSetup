@@ -30,8 +30,3 @@ phases:
         action: DeleteFile
         inputs:
           - path: '{{ build.DownloadScripts.inputs[0].destination }}'
-      -
-        name: DeleteConfig
-        action: DeleteFile
-        inputs:
-          - path: '{{ build.DownloadScripts.inputs[1].destination }}'

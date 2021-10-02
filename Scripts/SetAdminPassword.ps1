@@ -25,3 +25,5 @@ $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\C
 
 Disable-CAD
 AutoLogin "$AdminUser" "$AdminPassword"
+
+Remove-Item "C:\imageconfig.json" -Force
