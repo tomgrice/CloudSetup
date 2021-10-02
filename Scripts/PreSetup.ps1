@@ -1,20 +1,14 @@
 $InstallDir = "C:\CloudSetup"
 
-New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
-
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
-
-# Install Chocolatey
-Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' | Invoke-Expression
-
 
 Invoke-RestMethod -Uri 'https://api.github.com/repos/tomgrice/CloudSetup/zipball/dev' -OutFile "C:\CloudSetup.zip"
 Expand-Archive -Path "C:\CloudSetup.zip" -DestinationPath "C:\"
 Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 
 $DCVUrl = ("https://d1uj6qtbmh3dt5.cloudfront.net/" + ((Invoke-RestMethod "https://d1uj6qtbmh3dt5.cloudfront.net").ListBucketResult.Contents | Where-Object {$_.Key -like "*/Servers/*.msi"} | Sort-Object {$_.LastModified} -Descending | Select-Object -First 1).Key)
-
+Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
 Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart AUTOMATIC_SESSION_OWNER=Administrator ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1"
@@ -37,3 +31,6 @@ $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
 $settings = New-ScheduledTaskSettingsSet -Priority 1
 $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "SetupTask" -Settings $settings -Principal $principal -Description "Runs inital setup task." | Out-Null
+
+# Install Chocolatey
+Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' | Invoke-Expression
