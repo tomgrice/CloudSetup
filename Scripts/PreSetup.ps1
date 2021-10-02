@@ -5,11 +5,9 @@ New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
 
-# Disable QuickEdit
-Set-ItemProperty -Path "HKU:\.DEFAULT\Console" -Name QuickEdit -Value 0 -Force
-
 # Install Chocolatey
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' | Invoke-Expression
+
 
 Invoke-RestMethod -Uri 'https://api.github.com/repos/tomgrice/CloudSetup/zipball/dev' -OutFile "C:\CloudSetup.zip"
 Expand-Archive -Path "C:\CloudSetup.zip" -DestinationPath "C:\"
