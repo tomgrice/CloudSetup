@@ -88,6 +88,8 @@ if($DDNSQuery.StatusCode -eq "200")
     Stop-Process -ProcessName explorer
 }
 
+Start-Service dcvserver
+
 if ($user_data.DebugMode) {
     Stop-Transcript 
 }

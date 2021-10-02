@@ -13,11 +13,6 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Control Panel\Desktop]
 "WallPaper"=""
 "WallpaperStyle"="6"
-"AutoEndTasks"="1"
-"HungAppTimeout"="1000"
-"MenuShowDelay"="0"
-"WaitToKillAppTimeout"="2000"
-"LowLevelHooksTimeout"="1000"
 
 [HKEY_CURRENT_USER\Control Panel\Colors]
 "Background"="19 19 31"
