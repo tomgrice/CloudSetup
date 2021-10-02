@@ -1,20 +1,9 @@
+Set-ExecutionPolicy Bypass -Force
+
 $InstallDir = "C:\CloudSetup"
 $ScriptConfig = Get-Content -Path "C:\imageconfig.json" | ConvertFrom-Json
 
 New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
-
-Function DlFile([string]$Url, [string]$Path, [string]$Name) {
-    try {
-        if(![System.IO.File]::Exists($Path)) {
-	        Write-Host "Downloading `"$Name`"..."
-	        Start-BitsTransfer $Url $Path
-        }
-    } catch {
-        throw "`"$Name`" download failed."
-    }
-}
-
-Import-Module BitsTransfer
 
 # This adds a LOT of time to the image build process but reduces the \Windows folder size.
 Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
@@ -26,11 +15,16 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 # Disable QuickEdit
 Set-ItemProperty -Path "HKU:\.DEFAULT\Console" -Name QuickEdit -Value 0 -Force
 
+# Install Chocolatey
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
 Invoke-RestMethod -Uri 'https://api.github.com/repos/tomgrice/CloudSetup/zipball/dev' -OutFile "C:\CloudSetup.zip"
 Expand-Archive -Path "C:\CloudSetup.zip" -DestinationPath "C:\"
 Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 
-DlFile "https://d1uj6qtbmh3dt5.cloudfront.net/2021.2/Servers/nice-dcv-server-x64-Release-2021.2-11048.msi" "$InstallDir\NiceDCV.msi" "NICE-DCV"
+$DCVUrl = ("https://d1uj6qtbmh3dt5.cloudfront.net/" + ((Invoke-RestMethod "https://d1uj6qtbmh3dt5.cloudfront.net").ListBucketResult.Contents | Where-Object {$_.Key -like "*/Servers/*.msi"} | Sort-Object {$_.LastModified} -Descending | Select-Object -First 1).Key)
+
+Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
 Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart AUTOMATIC_SESSION_OWNER=Administrator ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1"
 

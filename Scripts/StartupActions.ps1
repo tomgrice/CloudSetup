@@ -79,7 +79,7 @@ if($DDNSQuery.StatusCode -eq "200")
         [Environment]::SetEnvironmentVariable("ServerAddress", $DDNSResponse[0])
         [Environment]::SetEnvironmentVariable("ServerIP", $DDNSResponse[1])
     }
-    Start-Process -FilePath "bginfo64" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
+    Start-Process -FilePath "bginfo" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
     if (-Not (Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System)) {
         New-Item -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System
     }

@@ -27,6 +27,6 @@ Write-Host "Create desktop system info template." -ForegroundColor Green
 
 Write-Host "Download Automatic Shutdown script." -ForegroundColor Green
 New-Item -ItemType Directory -Path "$env:ProgramData\CloudGaming"
-DlFile "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/CreateAutomaticShutdownScheduledTask.ps1" "$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1" "Automatic Shutdown Task"
-DlFile "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/Automatic-Shutdown.ps1" "$env:Programdata\CloudGaming\Automatic-Shutdown.ps1" "Automatic Shutdown Script"
+Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/CreateAutomaticShutdownScheduledTask.ps1" -OutFile "$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1"
+Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/Automatic-Shutdown.ps1" -OutFile "$env:Programdata\CloudGaming\Automatic-Shutdown.ps1"
 CreateShortcut "$ENV:HomeDrive$ENV:HomePath\Desktop\Enable Automatic Shutdown.lnk" "powershell" "-ExecutionPolicy Bypass -File `"$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1`""
