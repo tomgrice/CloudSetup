@@ -16,19 +16,6 @@ function CreateShortcut([string]$ShortcutLocation,[string]$ShortcutPath,[string]
     $SC.Save()
 }
 
-Function DlFile([string]$Url, [string]$Path, [string]$Name) {
-    try {
-        if(![System.IO.File]::Exists($Path)) {
-	        Write-Host "Downloading `"$Name`"..."
-	        Start-BitsTransfer $Url $Path
-        }
-    } catch {
-        throw "`"$Name`" download failed."
-    }
-}
-
-Import-Module BitsTransfer
-
 & $InstallDir\Scripts\Convert.ps1
 & $InstallDir\Scripts\InstallDrivers.ps1
 & $InstallDir\Scripts\InstallApps.ps1

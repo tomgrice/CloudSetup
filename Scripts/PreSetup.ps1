@@ -1,13 +1,6 @@
-Set-ExecutionPolicy Bypass -Force
-
 $InstallDir = "C:\CloudSetup"
-$ScriptConfig = Get-Content -Path "C:\imageconfig.json" | ConvertFrom-Json
 
 New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
-
-# This adds a LOT of time to the image build process but reduces the \Windows folder size.
-Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
-Start-Process Compact -ArgumentList "/CompactOS:Always" -NoNewWindow -Wait
 
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
