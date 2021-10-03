@@ -22,6 +22,15 @@ Remove-Item -force c:\secpol.cfg -confirm:$false
 $UnattendFile = "C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Unattend.xml"
 Set-Content $UnattendFile ((Get-Content $UnattendFile).Replace("C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Randomize-LocalAdminPassword.ps1 Administrator","$InstallDir\Scripts\SetAdminPassword.ps1"))
 
+# Install video drivers
+
+$DriverURL = (Invoke-RestMethod "https://ec2-amd-windows-drivers.s3.amazonaws.com/?prefix=latest").ListBucketResult ; $DriverURL = "https://" + $DriverURL.Name + ".s3.amazonaws.com/" + $DriverURL.Contents.Key
+Invoke-RestMethod "$DriverURL" -OutFile "$InstallDir\AMDDrivers.zip"
+
+Expand-Archive -Path "$InstallDir\AMDDrivers.zip" -DestinationPath "$InstallDir\Drivers\AMDDrivers"
+$Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter "*Retail*"
+Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait
+
 #Add first startup task
 
 $action = @(0,1)
