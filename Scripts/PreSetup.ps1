@@ -11,12 +11,13 @@ Invoke-RestMethod -Uri 'https://api.github.com/repos/tomgrice/CloudSetup/zipball
 Expand-Archive -Path "C:\CloudSetup.zip" -DestinationPath "C:\"
 Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 
-$DCVUrl = ("https://d1uj6qtbmh3dt5.cloudfront.net/" + ((Invoke-RestMethod "https://d1uj6qtbmh3dt5.cloudfront.net").ListBucketResult.Contents | Where-Object {$_.Key -like "*/Servers/*.msi"} | Sort-Object {$_.LastModified} -Descending | Select-Object -First 1).Key)
+"https://d1uj6qtbmh3dt5.cloudfront.net/" | Set-Variable BucketURL -Scope Private ; Set-Variable DCVUrl -Value ("$BucketURL" + ((Invoke-RestMethod "$BucketURL").ListBucketResult.Contents | Where-Object {$_.Key -like "*/Servers/*.msi"} | Sort-Object {$_.LastModified} -Descending | Select-Object -First 1).Key)
 Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
-Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1 AUTOMATIC_SESSION_OWNER=Administrator" -Wait
+Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL AUTOMATIC_SESSION_OWNER=Administrator" -Wait
 New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\" -Name security -Force | Set-ItemProperty -Name os-auto-lock -Value 0
+Set-Service -Name dcvserver -StartupType Automatic
 
 #Disable Password Complexity
 secedit /export /cfg c:\secpol.cfg
