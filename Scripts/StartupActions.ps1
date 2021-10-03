@@ -32,7 +32,8 @@ if($null -ne $user_data.RandomString)
             . C:\ProgramData\Amazon\EC2-Windows\Launch\Module\Scripts\Invoke-NetUser.ps1
             $AdminUser = "Administrator"
             Invoke-NetUser -UserName $AdminUser -Password $user_data.AdminPassword -Flags @("/ACTIVE:YES", "/LOGONPASSWORDCHG:NO", "/EXPIRES:NEVER", "/PASSWORDREQ:NO")
-            Start-Process AutoLogon -ArgumentList $AdminUser, $env:UserDomain, $user_data.AdminPassword -Wait
+            $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+            Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $user_data.AdminPassword -type String
         }
 
         # 2nd line: computer name
@@ -79,8 +80,6 @@ if($DDNSQuery.StatusCode -eq "200")
     Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name TileWallpaper -Value 0
     Stop-Process -ProcessName explorer
 }
-
-Start-Service dcvserver
 
 if ($user_data.DebugMode) {
     Stop-Transcript 

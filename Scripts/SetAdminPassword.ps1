@@ -16,7 +16,9 @@ $JSON.adminPasswordType = "DoNothing"
 $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json"
 
 Disable-CAD
-choco install autologon -y
-Start-Process AutoLogon -ArgumentList $AdminUser, $env:UserDomain, $AdminPassword -Wait
+$RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
+Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $AdminUser -type String
+Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $AdminPassword -type String
 
 Remove-Item "C:\imageconfig.json" -Force
