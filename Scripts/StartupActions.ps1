@@ -20,11 +20,11 @@ if($license -ne "1")
 Write-Host "Checking for user change requests."
 
 
-if($null -ne $user_data.RandomString)
+if($null -ne $user_data.TimeUpdated)
 {
-    if($user_data.RandomString -ne ((Get-ItemProperty -Path "HKLM:\System\Setup" -Name RandomString).RandomString))
+    if($user_data.TimeUpdated -gt ((Get-ItemProperty -Path "HKLM:\System\Setup" -Name TimeUpdated).TimeUpdated))
     {
-        Set-ItemProperty -Path "HKLM:\System\Setup" "RandomString" -Value $user_data.RandomString
+        Set-ItemProperty -Path "HKLM:\System\Setup" "TimeUpdated" -Value $user_data.TimeUpdated
 
         # 1st line: administrator password
         if ($null -ne $user_data.AdminPassword)

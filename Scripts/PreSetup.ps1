@@ -1,8 +1,9 @@
 $InstallDir = "C:\CloudSetup"
 
-# This adds a LOT of time to the image build process but reduces the \Windows folder size.
+<# This adds a LOT of time to the image build process but reduces the \Windows folder size.
 Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
 Start-Process Compact -ArgumentList "/CompactOS:Always" -NoNewWindow -Wait
+#>
 
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
