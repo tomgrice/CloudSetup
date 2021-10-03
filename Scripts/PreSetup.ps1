@@ -1,5 +1,9 @@
 $InstallDir = "C:\CloudSetup"
 
+# This adds a LOT of time to the image build process but reduces the \Windows folder size.
+Start-Process DISM -ArgumentList "/online /Cleanup-Image /StartComponentCleanup /ResetBase" -NoNewWindow -Wait
+Start-Process Compact -ArgumentList "/CompactOS:Always" -NoNewWindow -Wait
+
 # Disable UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name EnableLUA -Value 0 -Force
 
@@ -12,7 +16,7 @@ Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
 Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1 AUTOMATIC_SESSION_OWNER=Administrator" -Wait
-Set-ItemProperty -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\security" -Name os-auto-lock -Value 0
+New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\" -Name security -Force | Set-ItemProperty -Name os-auto-lock -Value 0
 
 #Disable Password Complexity
 secedit /export /cfg c:\secpol.cfg
@@ -35,7 +39,7 @@ Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDriver
 #Add first startup task
 
 $action = @(0,1)
-$action[0] = New-ScheduledTaskAction -Execute "powershell" -Argument "Set-ItemProperty -Path HKCU:\Console -Name QuickEdit -Value 0 ; (Get-ChildItem -Path HKCU:\Console -Recurse -Include *powershell* -ErrorAction SilentlyContinue | Remove-Item)" -WorkingDirectory "$InstallDir"
+$action[0] = New-ScheduledTaskAction -Execute "powershell" -Argument "Set-ItemProperty -Path HKCU:\Console -Name QuickEdit -Value 0 ; (Get-ChildItem -Path HKCU:\Console -Recurse -Include *powershell* -ErrorAction SilentlyContinue | Set-ItemProperty -Name QuickEdit -Value 0)" -WorkingDirectory "$InstallDir"
 $action[1] = New-ScheduledTaskAction -Execute "powershell" -Argument "-File $InstallDir\Setup.ps1" -WorkingDirectory "$InstallDir"
 $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
 $settings = New-ScheduledTaskSettingsSet -Priority 1
