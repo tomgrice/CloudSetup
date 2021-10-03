@@ -28,19 +28,11 @@ if($null -ne $user_data.RandomString)
 
         # 1st line: administrator password
         if ($null -ne $user_data.AdminPassword)
-        {
-            function AutoLogin([string]$User,[string]$Pass) {
-                $AutoLoginPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-                Set-ItemProperty $AutoLoginPath 'AutoAdminLogon' -Value "1" -Type String
-                Set-ItemProperty $AutoLoginPath 'DefaultUsername' -Value "$User" -Type String
-                Set-ItemProperty $AutoLoginPath 'DefaultPassword' -Value "$Pass" -Type String
-                Write-Host "Auto-login has been enabled." -ForegroundColor Green
-            }
-            
+        {            
             . C:\ProgramData\Amazon\EC2-Windows\Launch\Module\Scripts\Invoke-NetUser.ps1
             $AdminUser = "Administrator"
             Invoke-NetUser -UserName $AdminUser -Password $user_data.AdminPassword -Flags @("/ACTIVE:YES", "/LOGONPASSWORDCHG:NO", "/EXPIRES:NEVER", "/PASSWORDREQ:NO")
-            AutoLogin $AdminUser $user_data.AdminPassword
+            Start-Process AutoLogon -ArgumentList $AdminUser, $env:UserDomain, $user_data.AdminPassword -Wait
         }
 
         # 2nd line: computer name

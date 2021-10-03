@@ -11,7 +11,7 @@ $DCVUrl = ("https://d1uj6qtbmh3dt5.cloudfront.net/" + ((Invoke-RestMethod "https
 Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
-Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart AUTOMATIC_SESSION_OWNER=Administrator ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1"
+Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1 AUTOMATIC_SESSION_OWNER=Administrator"
 
 #Disable Password Complexity
 secedit /export /cfg c:\secpol.cfg

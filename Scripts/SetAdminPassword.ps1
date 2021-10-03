@@ -17,6 +17,6 @@ $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\C
 
 Disable-CAD
 choco install autologon -y
-Start-Process AutoLogon -ArgumentList "/accepteula", $AdminUser, $env:UserDomain, $AdminPassword -Wait
+Start-Process AutoLogon -ArgumentList $AdminUser, $env:UserDomain, $AdminPassword -Wait
 
 Remove-Item "C:\imageconfig.json" -Force
