@@ -11,7 +11,8 @@ $DCVUrl = ("https://d1uj6qtbmh3dt5.cloudfront.net/" + ((Invoke-RestMethod "https
 Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
-Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1 AUTOMATIC_SESSION_OWNER=Administrator"
+Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL DISABLE_SERVER_AUTOSTART=1 AUTOMATIC_SESSION_OWNER=Administrator" -Wait
+Set-ItemProperty -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\security" -Name os-auto-lock -Value 0
 
 #Disable Password Complexity
 secedit /export /cfg c:\secpol.cfg
