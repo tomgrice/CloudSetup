@@ -14,7 +14,9 @@ if (!(Get-ScheduledTask -TaskName "StartupActions" -ErrorAction SilentlyContinue
 }
 
 Write-Host "Set Windows appearance." -ForegroundColor Green
-regedit /s $InstallDir\Scripts\ChangeAppearance.reg
+Start-Process "$InstallDir\Scripts\NightViolet.deskthemepack"
+Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarGlomLevel -Value 1
+Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarSmallIcons -Value 1
 
 Write-Host "Enable Memory Compression" -ForegroundColor Green
 Enable-MMAgent -MemoryCompression
