@@ -1,3 +1,4 @@
+$ErrorActionPreference = 'SilentlyContinue'
 $InstallDir = "C:\CloudSetup"
 
 <# This adds a LOT of time to the image build process but reduces the \Windows folder size.
@@ -36,7 +37,7 @@ Invoke-RestMethod "$DriverURL" -OutFile "$InstallDir\AMDDrivers.zip"
 
 Expand-Archive -Path "$InstallDir\AMDDrivers.zip" -DestinationPath "$InstallDir\Drivers\AMDDrivers"
 $Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter "*Retail*"
-Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait
+Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait | Out-Null
 
 #Add first startup task
 
