@@ -22,16 +22,21 @@ Remove-Item -force c:\secpol.cfg -confirm:$false
 $UnattendFile = "C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Unattend.xml"
 Set-Content $UnattendFile ((Get-Content $UnattendFile).Replace("C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Randomize-LocalAdminPassword.ps1 Administrator","$InstallDir\Scripts\SetAdminPassword.ps1"))
 
-# Install video drivers
+"https://d1uj6qtbmh3dt5.cloudfront.net/" | Set-Variable BucketURL -Scope Private ; Set-Variable DCVUrl -Value ("$BucketURL" + ((Invoke-RestMethod "$BucketURL").ListBucketResult.Contents | Where-Object {$_.Key -like "*/Servers/*.msi"} | Sort-Object {$_.LastModified} -Descending | Select-Object -First 1).Key)
+Write-Host "Installing NICE-DCV from $DCVUrl"
+Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
+
+Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi ADDLOCAL=ALL AUTOMATIC_SESSION_OWNER=Administrator /quiet /norestart" -Wait
+New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\" -Name security -Force | Set-ItemProperty -Name os-auto-lock -Value 0
+
+# Install drivers
+Write-Host "Downloading and installing AMD video drivers."
 $DriverURL = (Invoke-RestMethod "https://ec2-amd-windows-drivers.s3.amazonaws.com/?prefix=latest").ListBucketResult ; $DriverURL = "https://" + $DriverURL.Name + ".s3.amazonaws.com/" + $DriverURL.Contents.Key
 Invoke-RestMethod "$DriverURL" -OutFile "$InstallDir\AMDDrivers.zip"
-
 Expand-Archive -Path "$InstallDir\AMDDrivers.zip" -DestinationPath "$InstallDir\Drivers\AMDDrivers"
 $Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter "*Retail*"
-pnputil /?
-Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait
-shutdown -a
+Add-WindowsDriver -Path "C:\" -Driver "$Driverdir" -Recurse
 
 #Add first startup task
 
