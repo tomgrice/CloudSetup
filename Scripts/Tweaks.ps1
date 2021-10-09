@@ -6,7 +6,7 @@ Write-Host "Adding startup script." -ForegroundColor Green
 Copy-Item "$InstallDir\Scripts\StartupActions.ps1" -Destination "C:\"
 
 if (!(Get-ScheduledTask -TaskName "StartupActions" -ErrorAction SilentlyContinue)) {
-    $action = New-ScheduledTaskAction -Execute "powershell" -Argument "-File C:\StartupActions.ps1 -WindowStyle Minimized" -WorkingDirectory "C:\"
+    $action = New-ScheduledTaskAction -Execute "pwsh" -Argument "-File C:\StartupActions.ps1 -WindowStyle Minimized" -WorkingDirectory "C:\"
     $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
     $settings = New-ScheduledTaskSettingsSet -Priority 1
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest

@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'SilentlyContinue'
 $InstallDir = "C:\CloudSetup"
 $user_data = Invoke-RestMethod -Uri 'http://169.254.169.254/latest/user-data'
+$ScriptConfig = Get-Content -Path "C:\imageconfig.json" | ConvertFrom-Json
 
 if ($user_data.DebugMode) {
     Start-Transcript 
@@ -21,6 +22,8 @@ function CreateShortcut([string]$ShortcutLocation,[string]$ShortcutPath,[string]
 & $InstallDir\Scripts\InstallApps.ps1
 & $InstallDir\Scripts\Tweaks.ps1
 & $InstallDir\Scripts\Cleanup.ps1
+
+Remove-Item "C:\imageconfig.json" -Force
 
 Unregister-ScheduledTask -TaskName SetupTask -Confirm:$false
 

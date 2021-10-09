@@ -20,5 +20,3 @@ $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
 Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
 Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $AdminUser -type String
 Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $AdminPassword -type String
-
-Remove-Item "C:\imageconfig.json" -Force

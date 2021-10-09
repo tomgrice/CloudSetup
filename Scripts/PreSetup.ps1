@@ -50,3 +50,6 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "SetupTask" -
 
 # Install Chocolatey
 Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' | Invoke-Expression
+
+# Install pwsh 7 (Core)
+choco install powershell-core -y

@@ -1,1 +1,4 @@
-choco install vcredist140 7zip open-shell opera qbittorrent bginfo steam -y
+foreach ($AppName in $ScriptConfig.ChocoInstall)
+{
+    Start-Process choco -ArgumentList "install", $AppName, "-y"
+}

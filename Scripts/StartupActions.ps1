@@ -6,7 +6,7 @@ if ($user_data.DebugMode) {
     Start-Transcript 
 }
 
-$license = (Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | where { $_.PartialProductKey } | select LicenseStatus).LicenseStatus
+$license = (Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | Where-Object { $_.PartialProductKey } | Select-Object LicenseStatus).LicenseStatus
 
 if($license -ne "1")
 {
@@ -51,27 +51,24 @@ if($null -ne $user_data.TimeUpdated)
 
 Write-Host "Setting resolution to hostname preferences"
 
-$Hostname = $ENV:ComputerName.ToLower()
-$SecretKey = $user_data.IonoSecret
-$SecurityKey = ([System.BitConverter]::ToString((new-object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider).ComputeHash((new-object -TypeName System.Text.UTF8Encoding).GetBytes($Hostname+"dk34Jd02m"))) -replace '-', '').ToLower()
-$DDNSQuery = Invoke-WebRequest -Uri "https://ionobeam.xyz/ddns-api.php?name=$Hostname&key=$SecurityKey&secret=$SecretKey" -UseBasicParsing
-$DDNSResult = $DDNSQuery.Content
+$DNSHost = $user_data.DNSHost
+$DNSToken = $user_data.DNSToken
 
-if($DDNSQuery.StatusCode -eq "200")
+if($null -ne $DNSToken)
 {
-    if(($DDNSResult -eq "Invalid key") -Or ($DDNSResult -eq "Invalid secret"))
+    $DNSQuery = Invoke-RestMethod "https://dyndns.ionobeam.xyz/update/$DNSHost/$DNSToken" -SkipHttpErrorCheck -StatusCodeVariable DNSStatusCode
+
+    if($DNSStatusCode -eq 200)
     {
-        Write-Host $DDNSResult
+        [Environment]::SetEnvironmentVariable("ServerAddress", $DNSQuery.fqdn)
+        [Environment]::SetEnvironmentVariable("ServerIP", $DNSQuery.current_ip)
+        Write-Host $DNSQuery.status
+    } else {
+        Write-Host $DNSQuery.error
         [Environment]::SetEnvironmentVariable("ServerAddress", "UNKNOWN")
         [Environment]::SetEnvironmentVariable("ServerIP", "UNKNOWN")
     }
-    else
-    {
-        Write-Host "Dynamic DNS set successfully."
-        $DDNSResponse = $DDNSResult -split ":"
-        [Environment]::SetEnvironmentVariable("ServerAddress", $DDNSResponse[0])
-        [Environment]::SetEnvironmentVariable("ServerIP", $DDNSResponse[1])
-    }
+
     Start-Process -FilePath "bginfo" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
     if (-Not (Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System)) {
         New-Item -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System
@@ -79,6 +76,7 @@ if($DDNSQuery.StatusCode -eq "200")
     Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -Value 6
     Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name TileWallpaper -Value 0
     Stop-Process -ProcessName explorer
+
 }
 
 if ($user_data.DebugMode) {
