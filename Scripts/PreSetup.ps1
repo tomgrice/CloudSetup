@@ -17,9 +17,8 @@ Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 Write-Host "Installing NICE-DCV from $DCVUrl"
 Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
-Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi /quiet /norestart ADDLOCAL=ALL AUTOMATIC_SESSION_OWNER=Administrator" -Wait
+Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi ADDLOCAL=ALL AUTOMATIC_SESSION_OWNER=Administrator /quiet /norestart" -Wait
 New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\" -Name security -Force | Set-ItemProperty -Name os-auto-lock -Value 0
-Set-Service -Name dcvserver -StartupType Automatic
 
 #Disable Password Complexity
 secedit /export /cfg c:\secpol.cfg
