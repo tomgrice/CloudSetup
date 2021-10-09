@@ -15,8 +15,14 @@ $JSON = ConvertFrom-Json (Get-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\
 $JSON.adminPasswordType = "DoNothing"
 $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json"
 
+Invoke-RestMethod "https://live.sysinternals.com/Autologon.exe" -OutFile "C:\Autologon.exe" -Wait
+
 Disable-CAD
-$RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+<# $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
 Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
-Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $AdminUser -type String
-Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $AdminPassword -type String
+Set-ItemProperty $RegistryPath 'ForceAutoLogon' -Value "1" -Type String
+Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $AdminUser -Type String
+Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $AdminPassword -Type String
+Set-ItemProperty $RegistryPath 'DefaultDomain' -Value '.\' -Type String #>
+
+Start-Process "C:\Autologon.exe" -ArgumentList $AdminUser, ".\", $AdminPassword, "/accepteula" -NoNewWindow -Wait

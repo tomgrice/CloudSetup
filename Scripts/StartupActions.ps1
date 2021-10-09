@@ -32,8 +32,9 @@ if($null -ne $user_data.TimeUpdated)
             . C:\ProgramData\Amazon\EC2-Windows\Launch\Module\Scripts\Invoke-NetUser.ps1
             $AdminUser = "Administrator"
             Invoke-NetUser -UserName $AdminUser -Password $user_data.AdminPassword -Flags @("/ACTIVE:YES", "/LOGONPASSWORDCHG:NO", "/EXPIRES:NEVER", "/PASSWORDREQ:NO")
-            $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-            Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $user_data.AdminPassword -type String
+<#             $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+            Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $user_data.AdminPassword -type String #>
+            Start-Process "C:\Autologon.exe" -ArgumentList $AdminUser, ".\", $user_data.AdminPassword, "/accepteula" -NoNewWindow -Wait
         }
 
         # 2nd line: computer name

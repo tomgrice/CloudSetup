@@ -28,6 +28,7 @@ Invoke-RestMethod $DCVUrl -OutFile "$InstallDir\NiceDCV.msi"
 
 Start-Process -FilePath "C:\Windows\System32\msiexec.exe" -ArgumentList "/i $InstallDir\NiceDCV.msi ADDLOCAL=ALL AUTOMATIC_SESSION_OWNER=Administrator /quiet /norestart" -Wait
 New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Software\GSettings\com\nicesoftware\dcv\" -Name security -Force | Set-ItemProperty -Name os-auto-lock -Value 0
+Set-Service dcvserver -StartupType Automatic
 
 # Install drivers
 Write-Host "Downloading and installing AMD video drivers."
