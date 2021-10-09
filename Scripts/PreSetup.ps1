@@ -29,7 +29,9 @@ Invoke-RestMethod "$DriverURL" -OutFile "$InstallDir\AMDDrivers.zip"
 
 Expand-Archive -Path "$InstallDir\AMDDrivers.zip" -DestinationPath "$InstallDir\Drivers\AMDDrivers"
 $Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter "*Retail*"
+pnputil /?
 Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait
+shutdown -a
 
 #Add first startup task
 
