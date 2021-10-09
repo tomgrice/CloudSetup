@@ -1,4 +1,3 @@
-$ErrorActionPreference = 'SilentlyContinue'
 $InstallDir = "C:\CloudSetup"
 
 <# This adds a LOT of time to the image build process but reduces the \Windows folder size.
@@ -34,9 +33,10 @@ New-Item -Path "Microsoft.PowerShell.Core\Registry::\HKEY_USERS\S-1-5-18\Softwar
 Write-Host "Downloading and installing AMD video drivers."
 $DriverURL = (Invoke-RestMethod "https://ec2-amd-windows-drivers.s3.amazonaws.com/?prefix=latest").ListBucketResult ; $DriverURL = "https://" + $DriverURL.Name + ".s3.amazonaws.com/" + $DriverURL.Contents.Key
 Invoke-RestMethod "$DriverURL" -OutFile "$InstallDir\AMDDrivers.zip"
+
 Expand-Archive -Path "$InstallDir\AMDDrivers.zip" -DestinationPath "$InstallDir\Drivers\AMDDrivers"
 $Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter "*Retail*"
-Add-WindowsDriver -Path "C:\" -Driver "$Driverdir" -Recurse
+Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait #>
 
 #Add first startup task
 
