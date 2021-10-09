@@ -15,7 +15,7 @@ $JSON = ConvertFrom-Json (Get-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\
 $JSON.adminPasswordType = "DoNothing"
 $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\Config\LaunchConfig.json"
 
-Invoke-RestMethod "https://live.sysinternals.com/Autologon.exe" -OutFile "C:\Autologon.exe" -Wait
+Invoke-RestMethod "https://live.sysinternals.com/Autologon.exe" -OutFile "C:\Autologon.exe"
 
 Disable-CAD
 <# $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
