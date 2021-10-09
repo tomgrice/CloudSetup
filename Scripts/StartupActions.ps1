@@ -79,6 +79,8 @@ if($null -ne $DNSToken)
 
 }
 
+Start-Service dcvserver
+
 if ($user_data.DebugMode) {
     Stop-Transcript 
 }

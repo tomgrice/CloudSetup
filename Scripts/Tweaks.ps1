@@ -32,3 +32,5 @@ New-Item -ItemType Directory -Path "$env:ProgramData\CloudGaming"
 Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/CreateAutomaticShutdownScheduledTask.ps1" -OutFile "$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1"
 Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/Automatic-Shutdown.ps1" -OutFile "$env:Programdata\CloudGaming\Automatic-Shutdown.ps1"
 CreateShortcut "$ENV:HomeDrive$ENV:HomePath\Desktop\Enable Automatic Shutdown.lnk" "powershell" "-ExecutionPolicy Bypass -File `"$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1`""
+
+Set-Service dcvserver -StartupType Manual
