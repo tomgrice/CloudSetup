@@ -63,7 +63,7 @@ def lambda_handler(event, context):
                     'Ebs': {
                         'DeleteOnTermination': False,
                         'SnapshotId': snapid,
-                        'VolumeType': 'gp2'
+                        'VolumeType': 'gp3'
                     }
                 },
             ],

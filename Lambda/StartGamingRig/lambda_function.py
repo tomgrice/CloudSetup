@@ -6,16 +6,32 @@ EC2_REGION = 'eu-west-2'
 
 def lambda_handler(event, context):
     
-    INSTANCE_NAME = event.get('queryStringParameters')
-    if INSTANCE_NAME != None:
-        INSTANCE_NAME = INSTANCE_NAME.get('instance-name')
+    SERVER_KEY = event.get('queryStringParameters')
+    if SERVER_KEY != None:
+        SERVER_KEY = SERVER_KEY.get('server-key')
         
-    #INSTANCE_NAME = 'trmg-cloud'
         
-    if INSTANCE_NAME == None:
-        return 'No instance name defined'
+    if SERVER_KEY == None:
+        return 'No server key defined'
 
     output = ''
+
+    dyndb = boto3.resource('dynamodb')
+
+    dyndb_table = dyndb.Table('ionoservers')
+    result = dyndb_table.query(
+        KeyConditionExpression=boto3.dynamodb.conditions.Key('ServerKey').eq(SERVER_KEY)
+    )
+
+    try:
+        server_config = result['Items'][0]
+    except:
+        server_config = False
+        return 'Unable to launch instance: server key not found.'
+
+    INSTANCE_NAME = server_config.get('InstanceName')
+
+    user_data = json.dumps(server_config) 
 
     ec2 = boto3.client('ec2',region_name=EC2_REGION)
     res = boto3.resource('ec2', region_name=EC2_REGION)
@@ -33,10 +49,11 @@ def lambda_handler(event, context):
         
         instance_result = ec2.run_instances(
             LaunchTemplate={
-                'LaunchTemplateName': 'LaunchCloudRig'
+                'LaunchTemplateName': 'trmg-cloud-1-template'
             },
             IamInstanceProfile={'Name': 'CloudGamingInstanceRole'},
             ImageId=image_id,
+            UserData=user_data,
             MaxCount=1,
             MinCount=1
             )

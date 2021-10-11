@@ -15,7 +15,7 @@ Move-Item -Path "C:\*CloudSetup*" -Destination $InstallDir
 secedit /export /cfg c:\secpol.cfg
 (Get-Content C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
 secedit /configure /db c:\windows\security\local.sdb /cfg c:\secpol.cfg /areas SECURITYPOLICY
-Remove-Item -force c:\secpol.cfg -confirm:$false
+Remove-Item -Force c:\secpol.cfg -Confirm:$False
 
 $UnattendFile = "C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Unattend.xml"
 Set-Content $UnattendFile ((Get-Content $UnattendFile).Replace("C:\ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Randomize-LocalAdminPassword.ps1 Administrator","$InstallDir\Scripts\SetAdminPassword.ps1"))

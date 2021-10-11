@@ -3,6 +3,81 @@
         {
             "type": "aws-sam",
             "request": "direct-invoke",
+            "name": "createNewInstance:lambda_function.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/Lambda/createNewInstance",
+                "lambdaHandler": "lambda_function.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "StartGamingRig:lambda_function.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/Lambda/StartGamingRig",
+                "lambdaHandler": "lambda_function.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "CloudRig-SnapOnTerminate:lambda_function.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/Lambda/CloudRig-SnapOnTerminate",
+                "lambdaHandler": "lambda_function.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "CloudRig-DeleteVolumeOldSnapshots:lambda_function.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/Lambda/CloudRig-DeleteVolumeOldSnapshots",
+                "lambdaHandler": "lambda_function.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "CloudRig-DeleteVolumeOldSnapshots:lambda_function.lambda_handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/CloudRig-DeleteVolumeOldSnapshots",
+                "lambdaHandler": "lambda_function.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
             "name": "StartGamingRig:lambda_function.lambda_handler (python3.9)",
             "invokeTarget": {
                 "target": "code",

@@ -18,11 +18,5 @@ $JSON | ConvertTo-Json | Set-Content "C:\ProgramData\Amazon\EC2-Windows\Launch\C
 Invoke-RestMethod "https://live.sysinternals.com/Autologon.exe" -OutFile "C:\Autologon.exe"
 
 Disable-CAD
-<# $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
-Set-ItemProperty $RegistryPath 'ForceAutoLogon' -Value "1" -Type String
-Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $AdminUser -Type String
-Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $AdminPassword -Type String
-Set-ItemProperty $RegistryPath 'DefaultDomain' -Value '.\' -Type String #>
 
 Start-Process "C:\Autologon.exe" -ArgumentList $AdminUser, ".\", $AdminPassword, "/accepteula" -NoNewWindow -Wait
