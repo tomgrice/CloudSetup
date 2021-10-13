@@ -33,4 +33,7 @@ Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Prepa
 Invoke-RestMethod "https://raw.githubusercontent.com/tomgrice/Parsec-Cloud-Preparation-Tool/master/PreInstall/Automatic-Shutdown.ps1" -OutFile "$env:Programdata\CloudGaming\Automatic-Shutdown.ps1"
 CreateShortcut "$ENV:HomeDrive$ENV:HomePath\Desktop\Enable Automatic Shutdown.lnk" "powershell" "-ExecutionPolicy Bypass -File `"$env:Programdata\CloudGaming\CreateAutomaticShutdownScheduledTask.ps1`""
 
+#Remove EC2 shortcuts from desktop
+Remove-Item "$env:USERPROFILE\Desktop\EC2*.website"
+
 Set-Service dcvserver -StartupType Manual

@@ -8,12 +8,27 @@ function Disable-IEESC {
 }
 
 function Set-PriorityControl {
-    Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 2
+    Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" -Name "Win32PrioritySeparation" -Value 38
     Write-Host "PriorityControl set to Programs." -ForegroundColor Green
+}
+
+function Set-BestAppearance {
+    $path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects'
+    try {
+        $s = (Get-ItemProperty -ErrorAction stop -Name VisualFXSetting -Path $path).VisualFXSetting 
+        if ($s -ne 1) {
+            Set-ItemProperty -Path $path -Name 'VisualFXSetting' -Value 1
+        }
+    }
+    catch {
+        New-ItemProperty -Path $path -Name 'VisualFXSetting' -Value 1 -PropertyType 'DWORD'
+    }
+   
 }
 
 Disable-IEESC
 Set-PriorityControl
+Set-BestAppearance
 
 # Audio fix
 New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
