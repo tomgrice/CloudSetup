@@ -53,32 +53,20 @@ if($null -ne $user_data.TimeUpdated)
 Write-Host "Setting resolution to hostname preferences"
 
 $DNSHost = $user_data.DNSHost
-$DNSToken = $user_data.DNSToken
+$PublicIP = Invoke-RestMethod "http://169.254.169.254/latest/meta-data/public-ipv4"
 
-if($null -ne $DNSToken)
-{
-    $DNSQuery = Invoke-RestMethod "https://dyndns.ionobeam.xyz/update/$DNSHost/$DNSToken" -SkipHttpErrorCheck -StatusCodeVariable DNSStatusCode
+[Environment]::SetEnvironmentVariable("ServerAddress", $DNSHost + "ionobeam.xyz")
+[Environment]::SetEnvironmentVariable("ServerIP", $PublicIP)
+ 
+Start-Process -FilePath "bginfo" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
 
-    if($DNSStatusCode -eq 200)
-    {
-        [Environment]::SetEnvironmentVariable("ServerAddress", $DNSQuery.fqdn)
-        [Environment]::SetEnvironmentVariable("ServerIP", $DNSQuery.current_ip)
-        Write-Host $DNSQuery.status
-    } else {
-        Write-Host $DNSQuery.error
-        [Environment]::SetEnvironmentVariable("ServerAddress", "UNKNOWN")
-        [Environment]::SetEnvironmentVariable("ServerIP", "UNKNOWN")
-    }
-
-    Start-Process -FilePath "bginfo" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
-    if (-Not (Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System)) {
-        New-Item -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System
-    }
-    Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -Value 6
-    Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name TileWallpaper -Value 0
-    Stop-Process -ProcessName explorer
-
+if (-Not (Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System)) {
+    New-Item -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System
 }
+Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -Value 6
+Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name TileWallpaper -Value 0
+Stop-Process -ProcessName explorer
+
 
 Start-Service dcvserver
 
