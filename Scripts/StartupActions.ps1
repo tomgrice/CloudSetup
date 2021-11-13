@@ -32,8 +32,6 @@ if($null -ne $user_data.TimeUpdated)
             . C:\ProgramData\Amazon\EC2-Windows\Launch\Module\Scripts\Invoke-NetUser.ps1
             $AdminUser = "Administrator"
             Invoke-NetUser -UserName $AdminUser -Password $user_data.AdminPassword -Flags @("/ACTIVE:YES", "/LOGONPASSWORDCHG:NO", "/EXPIRES:NEVER", "/PASSWORDREQ:NO")
-<#             $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-            Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $user_data.AdminPassword -type String #>
             Start-Process "C:\Autologon.exe" -ArgumentList $AdminUser, ".\", $user_data.AdminPassword, "/accepteula" -NoNewWindow -Wait
         }
 
@@ -52,11 +50,8 @@ if($null -ne $user_data.TimeUpdated)
 
 Write-Host "Setting resolution to hostname preferences"
 
-$DNSHost = $user_data.DNSHost
-$PublicIP = Invoke-RestMethod "http://169.254.169.254/latest/meta-data/public-ipv4"
-
-[Environment]::SetEnvironmentVariable("ServerAddress", $DNSHost + "ionobeam.xyz")
-[Environment]::SetEnvironmentVariable("ServerIP", $PublicIP)
+[Environment]::SetEnvironmentVariable("ServerAddress", "$($user_data.DNSHost).ionobeam.xyz")
+[Environment]::SetEnvironmentVariable("ServerIP", (Invoke-RestMethod "http://169.254.169.254/latest/meta-data/public-ipv4"))
  
 Start-Process -FilePath "bginfo" -ArgumentList "C:\DesktopInfo.bgi /timer:0 /accepteula /silent" -NoNewWindow -Wait
 
