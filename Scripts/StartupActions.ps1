@@ -4,6 +4,7 @@ $user_data = Invoke-RestMethod -Uri 'http://169.254.169.254/latest/user-data'
 
 if ($user_data.DebugMode) {
     Start-Transcript 
+    Start-Service dcvserver
 }
 
 $license = (Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | Where-Object { $_.PartialProductKey } | Select-Object LicenseStatus).LicenseStatus
@@ -63,8 +64,9 @@ Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\
 Stop-Process -ProcessName explorer
 
 
-Start-Service dcvserver
 
 if ($user_data.DebugMode) {
-    Stop-Transcript 
+    Stop-Transcript
+} else {
+    Start-Service dcvserver
 }

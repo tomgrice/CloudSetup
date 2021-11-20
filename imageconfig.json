@@ -3,8 +3,7 @@
     "ChocoInstall": [
         "vcredist140",
         "7zip",
-        "open-shell",
-        "opera",
+        "microsoft-edge",
         "qbittorrent",
         "bginfo",
         "steam"

@@ -39,6 +39,7 @@ $Driverdir = Get-ChildItem "$InstallDir\Drivers\AMDDrivers\" -Directory -Filter 
 Start-Process "pnputil" -ArgumentList "/add-driver $InstallDir\Drivers\AMDDrivers\$Driverdir\Packages\Drivers\Display\WT6A_INF\*inf /install" -NoNewWindow -Wait #>
 
 #Add first startup task
+Set-ItemProperty -Path "HKLM:\System\Setup\" -Name TimeUpdated -Value "0"
 
 $action = @(0,1)
 $action[0] = New-ScheduledTaskAction -Execute "powershell" -Argument "Set-ItemProperty -Path HKCU:\Console -Name QuickEdit -Value 0 ; (Get-ChildItem -Path HKCU:\Console -Recurse -Include *powershell* -ErrorAction SilentlyContinue | Set-ItemProperty -Name QuickEdit -Value 0)" -WorkingDirectory "$InstallDir"
